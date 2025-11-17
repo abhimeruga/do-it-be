@@ -37,13 +37,14 @@ await connectDB();
 async function addWeekDayToDB() {
   const firstDayOfTheWeek = moment(new Date())
     .startOf("week")
-    .add(2, "days")
     .clone()
     .format(DDMMYYYY);
   const today = moment(new Date()).format(DDMMYYYY);
   const dateExisits = await todoHistory
     .find({ [firstDayOfTheWeek]: { $exists: true } })
     .toArray();
+
+  console.log(firstDayOfTheWeek, today, dateExisits);
   if (firstDayOfTheWeek === today && !dateExisits.length) {
     for (let i = 0; i < 7; i++) {
       const dateKey = moment(new Date())
@@ -58,12 +59,12 @@ async function addWeekDayToDB() {
       console.log(" ⇒ Document inserted with _id → ", result);
     }
   } else {
-    console.log("dates already exisi");
+    console.log("dates already exist");
   }
 }
 
-setInterval(addWeekDayToDB, 60 * 60 * 24 * 7);
-// setInterval(addWeekDayToDB, 4000);
+setInterval(addWeekDayToDB, 1000 * 60 * 60 * 24);
+// setTimeout(addWeekDayToDB, 4000);
 
 // GET API to fetch todos
 app.get("/getTodo", async (req, res) => {
